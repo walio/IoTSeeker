@@ -1,3 +1,5 @@
+use warnings FATAL => 'all';
+use strict;
 use AnyEvent::HTTP;
 use Data::Dumper;
 use MIME::Base64;
@@ -18,6 +20,7 @@ if ($ARGV[0] =~ /^\-?h/) {
 	exit;
 }
 my $devCfgUrl = "";
+# handle command line opts, including devCfgUrl and debug
 for ($i=1; $i<=$#ARGV; $i++) {
 	if ($ARGV[$i] =~ /devCfgUrl=/) {
 		$devCfgUrl = $';
@@ -30,8 +33,10 @@ for ($i=1; $i<=$#ARGV; $i++) {
 		print "debug=$debug\n";
 	}
 }
+# read from devCfg file and parse it to json,stored in variable $devs
 readDevices();
 
+# handle the first command line opt,which means ips.all ips are stored in variable ipList
 foreach $e (split(/\,/, $ARGV[0])) {
 	if ($e =~ /\-/) {
 		$start = $`;
@@ -56,6 +61,7 @@ kickoff();
 $w->recv;
 
 sub kickoff {
+	# move ptr in array ipList and check every element(ip) until undefined
 	$ptr ++;
 	if (! defined $ipList[$ptr]) { return; }
 	check({ip => $ipList[$ptr], stage => ""});
@@ -119,13 +125,13 @@ sub check_login {
 						}
 						$numOfResults ++; if ($numOfResults == $numOfIps) { exit;} else {kickoff();}
 					}
-				} 
+				}
 			};
-		} 
-		
+		}
+
 		return;
 	}
-	
+
 	if ($debug) {print "checking login on $url\n";}
 	http_get $url, headers=> $headers, sub {
 		my $status = $_[1]->{Status};
@@ -163,6 +169,7 @@ sub composeURL {
 }
 
 sub search4devType { #with $body and $header
+	# use "devTypePattern" to match device and return name of device
 	my $e;
 	my $i;
 	my $j;
@@ -170,9 +177,11 @@ sub search4devType { #with $body and $header
 	my $len2;
 	my $p;
 	my $q;
+	# traverse every type and try to match
 	foreach $e (keys %{$devs}) {
 		$p = $devs->{$e}->{devTypePattern};
 		#$len = scalar @{$devs->{$e}->{devTypePattern}};
+		# store the strings to match in $tmp
 		if ($p->[0]->[0] eq "header") {
 			$tmp = $headers->{$p->[0]->[1]};
 		} elsif ($p->[0]->[0] eq "body") {
@@ -188,6 +197,7 @@ sub search4devType { #with $body and $header
 				}
 			}
 		}
+		# 4 ways of match
 		$p = $devs->{$e}->{devTypePattern}->[1];
 		$len = scalar @{$p};
 		if ($p->[0] eq "==") {
@@ -216,6 +226,7 @@ sub check {
 		return check_init_login($ctx);
 	}
 	http_get $url,  sub {
+		# try different check according to different http status code
 		($body, $headers) = @_;
 		my $status = $headers->{Status};
 		if ($debug) {print "got status=$status for $url\n";}
@@ -352,7 +363,7 @@ sub search4login {
 	my $ctx = shift;
 	$devType = match();
 	#print "devType=$devType|\n";
-	if ($devType eq "") { 
+	if ($devType eq "") {
 		print "didnot find devType for $ctx->{ip}\n";
 		$numOfResults ++; if ($numOfResults == $numOfIps) { exit;} else {kickoff();}
 		return; }
@@ -366,6 +377,7 @@ sub search4login {
 }
 
 sub readDevices {
+	# read buff from devices.cfg in current directory or a url, https allowed
 	#open FD, "devices.cfg" || die "Failed to open devices.cfg $!\n";
 	if ($devCfgUrl ne "") {
 		#partially from http://www.perlmonks.org/?node_id=1078704

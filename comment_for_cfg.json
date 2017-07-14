@@ -1,0 +1,22 @@
+{
+	"axis":  {
+		"devTypePattern": [["body", "title"], ["regex", "(?i)axis", "(?i)camera"]],
+		"loginUrlPattern": "document\\.write\\(\"([^\"\\]+)[^\\r\\n]+>Setup<\/a>",
+		"auth": ["basic", "admin:admin"]
+	},
+	"name for device match pattern(at will)": {
+		"devTypePattern": [["body", "tags to match in html document"], ["option for match pattern, see in iotScanner.pl #200-#214", "string to match"]],
+		"nextUrl": ["string",  "/control/userimage.html" ],
+		"auth": ["basic", "admin:meinsm"]
+	},
+	"JVC": {
+		"devTypePattern": [["header", "server"], ["regex", "^JVC "]],
+		"nextUrl": ["string",  "/cgi-bin/c20display.cgi?c20encodeencode.html" ],
+		"auth": ["basic", "admin:jvc"]
+	},
+	"name for device match pattern(at will)": {
+		"devTypePattern": [["header", "key of the key-value pair in http header to match"], ["option for match pattern, see in iotScanner.pl #200-#214", "string to match"]],
+		"nextUrl": ["string",  "/user.set?name=admin1&pwd=admin1&type=1" ],
+		"auth": ["basic", "admin:1234"]
+	}
+}
