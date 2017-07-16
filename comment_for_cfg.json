@@ -18,5 +18,11 @@
 		"devTypePattern": [["header", "key of the key-value pair in http header to match"], ["option for match pattern, see in iotScanner.pl #200-#214", "string to match"]],
 		"nextUrl": ["string",  "/user.set?name=admin1&pwd=admin1&type=1" ],
 		"auth": ["basic", "admin:1234"]
-	}
+	},
+
+	"Ubiquiti": {
+		"devTypePattern": [["body", "title"], ["==", "EdgeOS"]],
+		"nextUrl": ["string",  "" ],
+		"auth": ["form", "", "username=ubnt&password=ubnt", "body", "!substr", "form id=\"LoginForm\""] // wrong, when login fail, form id=\"LoginForm\" also appears
+	},
 }

@@ -1,5 +1,3 @@
-use warnings FATAL => 'all';
-use strict;
 use AnyEvent::HTTP;
 use Data::Dumper;
 use MIME::Base64;
