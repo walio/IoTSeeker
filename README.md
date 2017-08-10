@@ -1,6 +1,6 @@
 # IoTSeeker
 
-forked from https://github.com/rapid7/IoTSeeker, to check if a device has default admin
+forked from https://github.com/rapid7/IoTSeeker, convert from perl to python, to check if a device has default admin
 
 ## Install
 
